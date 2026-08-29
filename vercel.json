@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/Screens/home.html" },
+    { "source": "/home.html", "destination": "/Screens/home.html" },
+    { "source": "/my-forecast.html", "destination": "/Screens/my-forecast.html" }
+  ]
+}
