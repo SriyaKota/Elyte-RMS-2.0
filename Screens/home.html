@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RMS 2.0 — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B3A5C;
+    --brand-blue:#01426A;
+    --brand-blue-bg:#EAF2F8;
+    --text-dark:#111827;
+    --text-gray:#4A5565;
+    --text-gray-light:#6B7280;
+    --border:#E5E7EB;
+    --page-bg:#F3F4F6;
+    --card-bg:#FFFFFF;
+    --status-blue:#3B82F6;
+    --status-amber:#F0A93B;
+    --status-red:#EF4444;
+    --green-bg:#DCFCE7;
+    --green-text:#15803D;
+    --avatar-orange:#F97316;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text-dark);
+    background:var(--page-bg);
+    overflow:hidden;
+  }
+  .app{display:flex;flex-direction:column;height:100vh;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    height:64px;
+    background:var(--navy);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .topbar-left{display:flex;align-items:center;gap:10px;margin-left:8px;}
+  .logo-ipsum{display:block;flex-shrink:0;}
+  .logo-rms{font-size:14px;font-weight:400;color:#CBD9E4;}
+  .topbar-right{display:flex;align-items:center;gap:20px;}
+  .tb-item{position:relative;display:flex;align-items:center;gap:6px;font-size:13px;color:#E5EEF5;cursor:pointer;}
+
+  .cal-dropdown{
+    display:none;position:absolute;top:calc(100% + 10px);left:0;
+    width:220px;background:#fff;border-radius:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.18);
+    overflow:hidden;z-index:50;cursor:default;
+  }
+  .cal-dropdown.open{display:block;}
+  .cal-dropdown-title{
+    padding:16px;font-size:15px;font-weight:600;color:var(--text-dark);
+    border-bottom:1px solid var(--border);
+  }
+  .cal-option{
+    display:flex;align-items:center;gap:14px;
+    padding:16px;font-size:14px;color:#364153;
+    border-bottom:1px solid var(--border);cursor:pointer;
+  }
+  .cal-option:last-child{border-bottom:none;}
+  .cal-radio{
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid #99A1AF;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cal-option.selected{color:var(--text-dark);}
+  .cal-option.selected .cal-radio{border-color:#006BA6;}
+  .cal-option.selected .cal-radio::after{
+    content:"";width:10px;height:10px;border-radius:50%;background:#006BA6;
+  }
+  .tb-icon{width:18px;height:18px;color:#E5EEF5;}
+  .bell-wrap{position:relative;display:flex;}
+  .badge{
+    position:absolute;top:-6px;right:-8px;
+    background:#EF4444;color:#fff;font-size:9px;font-weight:700;
+    border-radius:8px;padding:1px 4px;line-height:1.2;
+    border:1.5px solid var(--navy);
+  }
+  .avatar{
+    width:28px;height:28px;border-radius:50%;
+    background:var(--avatar-orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+    flex-shrink:0;
+  }
+  .avatar-wrap{position:relative;display:flex;align-items:center;gap:6px;cursor:pointer;}
+
+  /* ---------- Header dropdowns ---------- */
+  .dropdown{
+    display:none;position:absolute;top:calc(100% + 10px);right:0;
+    background:#fff;border-radius:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.18);
+    overflow:hidden;z-index:50;cursor:default;
+    color:var(--text-dark);
+  }
+  .dropdown.open{display:block;}
+  .dropdown-title{
+    padding:16px;font-size:15px;font-weight:600;color:var(--text-dark);
+    border-bottom:1px solid var(--border);
+  }
+  .dropdown-footer{
+    padding:14px;text-align:center;border-top:1px solid var(--border);
+  }
+  .dropdown-footer a{color:#006BA6;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;}
+
+  .notif-dropdown{width:360px;}
+  .notif-list{max-height:420px;overflow-y:auto;}
+  .notif-item{display:flex;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .notif-item:last-child{border-bottom:none;}
+  .notif-dot{width:8px;height:8px;border-radius:50%;background:#006BA6;flex-shrink:0;margin-top:6px;}
+  .notif-body{flex:1;min-width:0;}
+  .notif-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+  .notif-title{font-size:13.5px;font-weight:600;color:var(--text-dark);}
+  .notif-time{font-size:11.5px;color:#9AA3AF;white-space:nowrap;flex-shrink:0;}
+  .notif-sender{font-size:12px;color:#6A7282;margin-top:2px;}
+  .notif-desc{font-size:12px;color:#6A7282;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  .ql-dropdown{width:300px;}
+  .ql-pop-list{max-height:420px;overflow-y:auto;}
+  .ql-pop-item{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:13.5px;color:var(--text-dark);border-bottom:1px solid var(--border);cursor:pointer;}
+  .ql-pop-item:last-child{border-bottom:none;}
+  .ql-pop-item svg{width:20px;height:20px;flex-shrink:0;}
+
+  .profile-dropdown{width:300px;}
+  .profile-header{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--border);}
+  .profile-name{font-size:18px;font-weight:600;color:var(--text-dark);}
+  .profile-info{padding:16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:14px;}
+  .profile-row{display:flex;justify-content:space-between;font-size:13.5px;}
+  .profile-label{color:#9AA3AF;}
+  .profile-value{color:var(--text-dark);font-weight:500;}
+  .profile-footer{padding:16px;}
+  .profile-settings-btn{
+    width:100%;background:#006BA6;color:#fff;border:none;border-radius:6px;
+    padding:12px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+
+  /* ---------- Body layout ---------- */
+  .body-wrap{display:flex;flex:1;min-height:0;overflow:hidden;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:208px;flex-shrink:0;
+    background:#fff;border-right:1px solid var(--border);
+    overflow-y:auto;overflow-x:hidden;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:16px 12px;
+    transition:width 0.18s ease;
+  }
+  .sidebar.collapsed{width:76px;padding:16px 8px;}
+  .nav-list{display:flex;flex-direction:column;gap:2px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border-radius:6px;
+    font-size:14px;color:var(--text-gray);cursor:pointer;
+    border-left:3px solid transparent;
+    white-space:nowrap;
+    text-decoration:none;
+  }
+  .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+  .nav-item.active{
+    background:var(--brand-blue-bg);
+    color:var(--brand-blue);
+    font-weight:600;
+    border-left:3px solid var(--brand-blue);
+  }
+  .nav-item .label{flex:1;overflow:hidden;text-overflow:ellipsis;}
+  .nav-item .chev{width:14px;height:14px;color:var(--text-gray);flex-shrink:0;}
+  .nav-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+  .sidebar.collapsed .nav-item{
+    justify-content:center;
+    padding:0;border-left:none;background:transparent;font-weight:400;color:var(--text-gray);
+  }
+  .sidebar.collapsed .nav-item.active{background:transparent;border-left:none;font-weight:400;color:var(--text-gray);}
+  .sidebar.collapsed .nav-item .label,
+  .sidebar.collapsed .nav-item .chev{display:none;}
+  .sidebar.collapsed .nav-icon{width:40px;height:40px;border-radius:8px;margin:1px 0;}
+  .sidebar.collapsed .nav-item.active .nav-icon{background:var(--brand-blue-bg);color:var(--brand-blue);}
+
+  .sidebar-bottom{border-top:1px solid var(--border);padding-top:12px;}
+  .collapse-btn{
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;color:var(--brand-blue);font-weight:600;
+    padding:8px 10px;cursor:pointer;white-space:nowrap;
+  }
+  .collapse-btn svg{width:16px;height:16px;flex-shrink:0;}
+  .sidebar.collapsed .collapse-btn{justify-content:center;padding:8px 0;}
+  .sidebar.collapsed .collapse-btn .label{display:none;}
+  .icon-expand{display:none;}
+  .sidebar.collapsed .icon-collapse{display:none;}
+  .sidebar.collapsed .icon-expand{display:block;}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;padding:24px;overflow-y:auto;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:16px;}
+  .stat-card{
+    background:var(--card-bg);border:1px solid var(--border);
+    border-radius:10px;padding:24px;display:flex;align-items:center;gap:14px;
+  }
+  .stat-icon{
+    width:48px;height:48px;border-radius:8px;background:#006BA6;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .stat-icon svg{width:24px;height:24px;color:#ffffff;}
+  .stat-value{font-size:22px;font-weight:700;line-height:1.1;}
+  .stat-label{font-size:13px;color:var(--text-gray-light);margin-top:2px;}
+
+  .content-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;align-items:stretch;margin-bottom:16px;}
+  .col-left{grid-column:span 2;min-width:0;display:flex;flex-direction:column;}
+  .col-left .card{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .col-right{grid-column:span 1;min-width:0;display:flex;flex-direction:column;gap:16px;}
+
+  .card{
+    background:var(--card-bg);border:1px solid var(--border);
+    border-radius:10px;padding:24px;
+  }
+  .card-header-row{display:flex;align-items:flex-start;justify-content:space-between;}
+  .card-title{font-size:16px;font-weight:500;}
+  .card-subtext{font-size:12.5px;color:var(--text-gray-light);margin-top:4px;}
+  .icon-btn{
+    width:30px;height:30px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .icon-btn svg{width:24px;height:24px;color:#006BA6;}
+
+  .ql-header-row{align-items:center;}
+  .ql-title{font-weight:500;}
+  .ql-edit-btn{width:24px;height:24px;}
+
+  /* Tabs */
+  .tabs{display:flex;gap:24px;border-bottom:1px solid var(--border);margin-top:16px;}
+  .tab{
+    padding:8px 2px 10px 2px;font-size:13.5px;color:var(--text-gray-light);
+    cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+  }
+  .tab.active{color:var(--brand-blue);font-weight:600;border-bottom:2px solid var(--brand-blue);}
+
+  /* Task list */
+  .task-list{margin-top:4px;flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:13.8px;}
+  .task-item{
+    border:1px solid var(--border);
+    border-left:3px solid var(--status-blue);
+    border-radius:0 8px 8px 0;
+    padding:16.1px 16px;background:#FAFBFC;
+  }
+  .task-item.amber{border-left-color:var(--status-amber);}
+  .task-item.red{border-left-color:var(--status-red);}
+  .task-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .task-title{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:14px;font-weight:500;color:#364153;}
+  .task-actions{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+  .task-action{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:400;color:var(--brand-blue);white-space:nowrap;cursor:pointer;}
+  .task-action svg{width:12px;height:12px;}
+  .task-desc{font-size:12px;font-weight:400;color:#6A7282;margin-top:4px;}
+  .task-created{font-size:11.5px;color:#9AA3AF;margin-top:8px;}
+  .task-fade{
+    position:absolute;left:0;right:0;bottom:0;height:60px;
+    background:linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
+    pointer-events:none;
+  }
+
+  /* Calendar */
+  .cal-date{font-size:14px;font-weight:700;}
+  .cal-week{display:flex;justify-content:space-between;margin-top:16px;}
+  .cal-day{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--text-gray-light);}
+  .cal-day .num{
+    width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;color:var(--text-dark);font-weight:500;
+  }
+  .cal-day.today .num{background:var(--brand-blue);color:#fff;font-weight:700;}
+  .cal-empty{
+    display:flex;align-items:center;gap:8px;margin-top:18px;
+    padding-top:14px;border-top:1px solid var(--border);
+    font-size:12.5px;color:var(--text-gray-light);
+  }
+
+  /* Quick links */
+  .ql-list{display:flex;flex-direction:column;margin-top:8px;}
+  .ql-item{display:flex;align-items:center;gap:10px;padding:14px 4px;font-size:13.5px;color:var(--text-dark);border-bottom:1px solid var(--border);cursor:pointer;}
+  .ql-item:last-child{border-bottom:none;}
+  .ql-item svg{width:17px;height:17px;color:var(--brand-blue);flex-shrink:0;}
+
+  /* Project list table */
+  .table-wrap{overflow-x:auto;margin-top:16px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{
+    text-align:left;padding:10px 12px;color:var(--text-gray-light);
+    font-weight:600;font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap;
+  }
+  th .th-inner{display:flex;align-items:center;gap:5px;}
+  th svg{width:11px;height:11px;color:#9AA3AF;}
+  td{padding:12px;border-bottom:1px solid var(--border);color:var(--text-dark);}
+  .status-pill{
+    background:var(--green-bg);color:var(--green-text);
+    font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:12px;display:inline-block;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <svg class="logo-ipsum" width="60" height="24" viewBox="0 0 88 35" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.4236 27.5262C8.3003 27.5262 6.45579 27.1169 4.89011 26.2984C3.32441 25.4585 2.11261 24.2846 1.2547 22.7769C0.418232 21.2478 0 19.4493 0 17.3815C0 15.3138 0.407509 13.5369 1.22253 12.0508C2.05899 10.5431 3.23862 9.39077 4.76141 8.59385C6.30565 7.77539 8.118 7.36615 10.1984 7.36615C12.2574 7.36615 14.0268 7.76462 15.5068 8.56153C16.9867 9.33692 18.1127 10.4569 18.8848 11.9215C19.6783 13.3862 20.0752 15.1416 20.0752 17.1876V19.0938H5.69439C5.93032 20.343 6.44506 21.2908 7.23864 21.9369C8.03221 22.5615 9.08315 22.8738 10.3915 22.8738C11.4424 22.8738 12.2574 22.7123 12.8365 22.3892C13.4371 22.0446 13.8661 21.5061 14.1233 20.7738H20.043C19.6355 22.8846 18.5845 24.5431 16.8902 25.7493C15.1958 26.9338 13.0403 27.5262 10.4236 27.5262ZM5.79091 15.2169H14.4129C14.2199 14.14 13.7695 13.3431 13.0617 12.8261C12.3754 12.2877 11.4317 12.0185 10.2306 12.0185C9.05097 12.0185 8.08582 12.2877 7.33515 12.8261C6.58448 13.3646 6.06973 14.1616 5.79091 15.2169Z" fill="white"/><path d="M22.9927 27.1385V0H28.9124V27.1385H22.9927Z" fill="white"/><path d="M33.9165 34.8923V30.1108H38.0346L39.3535 26.9124L31.1497 7.75385H37.4232L42.442 20.1277H42.5708L47.493 7.75385H53.6056L45.3053 27.1385L43.8576 30.5954C43.2785 31.9738 42.5814 33.0292 41.7664 33.7615C40.9729 34.5154 39.7932 34.8923 38.2276 34.8923H33.9165Z" fill="white"/><path d="M60.3292 27.1385C58.8278 27.1385 57.6589 26.7616 56.8224 26.0076C56.0074 25.2323 55.6 24.0585 55.6 22.4862V12.4062L51.5 12.5L53.5 7.75385H55.6642V1.93846H61.4551V7.75385H65.7018V12.4062H61.5195V22.4862H66.1522V27.1385H60.3292Z" fill="white"/><path d="M78.2463 27.5261C76.123 27.5261 74.2784 27.1169 72.7128 26.2984C71.147 25.4585 69.9352 24.2846 69.0773 22.7769C68.241 21.2478 67.8226 19.4493 67.8226 17.3815C67.8226 15.3138 68.2302 13.5369 69.0452 12.0508C69.8817 10.5431 71.0613 9.39076 72.5842 8.59385C74.1284 7.77539 75.9407 7.36615 78.0211 7.36615C80.0801 7.36615 81.8496 7.76461 83.3295 8.56153C84.8093 9.33691 85.9354 10.4569 86.7075 11.9215C87.501 13.3862 87.8978 15.1416 87.8978 17.1876V19.0938H73.517C73.753 20.343 74.2678 21.2908 75.0613 21.9369C75.8549 22.5615 76.9058 22.8738 78.2142 22.8738C79.2651 22.8738 80.0801 22.7123 80.6592 22.3892C81.2598 22.0446 81.6887 21.5061 81.9461 20.7738H87.8657C87.4581 22.8846 86.4072 24.5431 84.7128 25.7493C83.0184 26.9338 80.8629 27.5261 78.2463 27.5261ZM73.6136 15.2169H82.2357C82.0426 14.14 81.5922 13.3431 80.8845 12.8261C80.1981 12.2877 79.2543 12.0185 78.0533 12.0185C76.8737 12.0185 75.9086 12.2877 75.1578 12.8261C74.4072 13.3646 73.8923 14.1616 73.6136 15.2169Z" fill="white"/></svg>
+      <span class="logo-rms">RMS 2.0</span>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-item" id="calTypeToggle">
+        <svg class="tb-icon" viewBox="0 0 24 24" fill="none"><path d="M5 22.001C4.45 22.001 3.97917 21.8051 3.5875 21.4135C3.19583 21.0218 3 20.551 3 20.001V6.00098C3 5.45098 3.19583 4.98014 3.5875 4.58848C3.97917 4.19681 4.45 4.00098 5 4.00098H6V3.00098C6 2.71764 6.09583 2.48014 6.2875 2.28848C6.47917 2.09681 6.71667 2.00098 7 2.00098C7.28333 2.00098 7.52083 2.09681 7.7125 2.28848C7.90417 2.48014 8 2.71764 8 3.00098V4.00098H16V3.00098C16 2.71764 16.0958 2.48014 16.2875 2.28848C16.4792 2.09681 16.7167 2.00098 17 2.00098C17.2833 2.00098 17.5208 2.09681 17.7125 2.28848C17.9042 2.48014 18 2.71764 18 3.00098V4.00098H19C19.55 4.00098 20.0208 4.19681 20.4125 4.58848C20.8042 4.98014 21 5.45098 21 6.00098V20.001C21 20.551 20.8042 21.0218 20.4125 21.4135C20.0208 21.8051 19.55 22.001 19 22.001H5ZM5 20.001H19V10.001H5V20.001ZM5 8.00098H19V6.00098H5V8.00098Z" fill="currentColor"/></svg>
+        <span id="calTypeLabel">ISO - 523</span>
+        <svg class="tb-icon" style="width:12px;height:12px;" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <div class="cal-dropdown" id="calDropdown">
+          <div class="cal-dropdown-title">Calendar Type</div>
+          <div class="cal-option selected" data-value="ISO - 523"><span class="cal-radio"></span>ISO</div>
+          <div class="cal-option" data-value="445"><span class="cal-radio"></span>445</div>
+          <div class="cal-option" data-value="Israel"><span class="cal-radio"></span>Israel</div>
+        </div>
+      </div>
+      <div class="bell-wrap" id="notifToggle">
+        <svg class="tb-icon" viewBox="0 0 24 24" fill="none"><path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="badge">9+</span>
+
+        <div class="dropdown notif-dropdown" id="notifDropdown">
+          <div class="dropdown-title">Notifications</div>
+          <div class="notif-list">
+            <div class="notif-item">
+              <span class="notif-dot"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">Project Aurora Initiative updated</span><span class="notif-time">3 min ago</span></div>
+                <div class="notif-sender">Andrew Marks</div>
+                <div class="notif-desc">New milestone added to the project Qua...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">New team member assigned</span><span class="notif-time">5 min ago</span></div>
+                <div class="notif-sender">Andrew Marks</div>
+                <div class="notif-desc">John Smith has been added to Pioneer P...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">Task deadline approaching</span><span class="notif-time">15 min ago</span></div>
+                <div class="notif-sender">James Anderson</div>
+                <div class="notif-desc">Develop a project planning is due tomorr...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot" style="visibility:hidden;"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">Report ready for review</span><span class="notif-time">1 hour ago</span></div>
+                <div class="notif-sender">Alexander P</div>
+                <div class="notif-desc">Q4 Project Performance Report is availa...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot" style="visibility:hidden;"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">System maintenance scheduled</span><span class="notif-time">3 hours ago</span></div>
+                <div class="notif-sender">IT Dept</div>
+                <div class="notif-desc">MMS will be down for maintenance on S...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">Budget approval received</span><span class="notif-time">5 hours ago</span></div>
+                <div class="notif-sender">Smitha Menon</div>
+                <div class="notif-desc">Quantum Quest project budget has been...</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-dot"></span>
+              <div class="notif-body">
+                <div class="notif-top"><span class="notif-title">Resource allocation updated</span><span class="notif-time">1 day ago</span></div>
+                <div class="notif-sender">John Smith</div>
+                <div class="notif-desc">New resources assigned to your depart...</div>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-footer"><a href="#">View All</a></div>
+        </div>
+      </div>
+      <div class="bell-wrap" id="bookmarkToggle">
+        <svg class="tb-icon" viewBox="0 0 24 24" fill="none"><path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <div class="dropdown ql-dropdown" id="bookmarkDropdown">
+          <div class="dropdown-title">Quick Links</div>
+          <div class="ql-pop-list">
+            <div class="ql-pop-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4.99999 11.6667L6.24999 9.24999C6.38588 8.98011 6.59259 8.75224 6.848 8.59078C7.10341 8.42931 7.39791 8.34032 7.69999 8.33332H16.6667M16.6667 8.33332C16.9213 8.33288 17.1726 8.39077 17.4014 8.50256C17.6301 8.61435 17.8302 8.77706 17.9863 8.97821C18.1424 9.17936 18.2503 9.4136 18.3018 9.66295C18.3533 9.9123 18.347 10.1701 18.2833 10.4167L17 15.4167C16.9071 15.7763 16.6968 16.0946 16.4024 16.3211C16.108 16.5475 15.7464 16.6692 15.375 16.6667H3.33332C2.8913 16.6667 2.46737 16.4911 2.15481 16.1785C1.84225 15.8659 1.66666 15.442 1.66666 15V4.16666C1.66666 3.72463 1.84225 3.3007 2.15481 2.98814C2.46737 2.67558 2.8913 2.49999 3.33332 2.49999H6.58332C6.86206 2.49726 7.13703 2.56448 7.38307 2.69551C7.62911 2.82653 7.83836 3.01718 7.99166 3.24999L8.66666 4.24999C8.81841 4.48043 9.02501 4.66959 9.26791 4.80049C9.5108 4.93139 9.7824 4.99994 10.0583 4.99999H15C15.442 4.99999 15.8659 5.17558 16.1785 5.48814C16.4911 5.8007 16.6667 6.22463 16.6667 6.66666V8.33332Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>Project Aurora Initiative</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_qlp1)"><path d="M5 18.3333V3.33332C5 2.8913 5.17559 2.46737 5.48816 2.15481C5.80072 1.84225 6.22464 1.66666 6.66667 1.66666H13.3333C13.7754 1.66666 14.1993 1.84225 14.5118 2.15481C14.8244 2.46737 15 2.8913 15 3.33332V18.3333H5Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.99999 10H3.33332C2.8913 10 2.46737 10.1756 2.15481 10.4882C1.84225 10.8007 1.66666 11.2246 1.66666 11.6667V16.6667C1.66666 17.1087 1.84225 17.5326 2.15481 17.8452C2.46737 18.1577 2.8913 18.3333 3.33332 18.3333H4.99999" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7.5H16.6667C17.1087 7.5 17.5326 7.6756 17.8452 7.98816C18.1577 8.30072 18.3333 8.72464 18.3333 9.16667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1577 17.1087 18.3333 16.6667 18.3333H15" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 5H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 8.33334H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 11.6667H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 15H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_qlp1"><rect width="20" height="20" fill="white"/></clipPath></defs></svg>Architecture &amp; Design Department</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Budget Utilization Report</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_qlp2)"><path d="M5 18.3333V3.33332C5 2.8913 5.17559 2.46737 5.48816 2.15481C5.80072 1.84225 6.22464 1.66666 6.66667 1.66666H13.3333C13.7754 1.66666 14.1993 1.84225 14.5118 2.15481C14.8244 2.46737 15 2.8913 15 3.33332V18.3333H5Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.99999 10H3.33332C2.8913 10 2.46737 10.1756 2.15481 10.4882C1.84225 10.8007 1.66666 11.2246 1.66666 11.6667V16.6667C1.66666 17.1087 1.84225 17.5326 2.15481 17.8452C2.46737 18.1577 2.8913 18.3333 3.33332 18.3333H4.99999" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7.5H16.6667C17.1087 7.5 17.5326 7.6756 17.8452 7.98816C18.1577 8.30072 18.3333 8.72464 18.3333 9.16667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1577 17.1087 18.3333 16.6667 18.3333H15" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 5H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 8.33334H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 11.6667H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 15H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_qlp2"><rect width="20" height="20" fill="white"/></clipPath></defs></svg>Civil Engineering</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Overall consolidated report</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4.99999 11.6667L6.24999 9.24999C6.38588 8.98011 6.59259 8.75224 6.848 8.59078C7.10341 8.42931 7.39791 8.34032 7.69999 8.33332H16.6667M16.6667 8.33332C16.9213 8.33288 17.1726 8.39077 17.4014 8.50256C17.6301 8.61435 17.8302 8.77706 17.9863 8.97821C18.1424 9.17936 18.2503 9.4136 18.3018 9.66295C18.3533 9.9123 18.347 10.1701 18.2833 10.4167L17 15.4167C16.9071 15.7763 16.6968 16.0946 16.4024 16.3211C16.108 16.5475 15.7464 16.6692 15.375 16.6667H3.33332C2.8913 16.6667 2.46737 16.4911 2.15481 16.1785C1.84225 15.8659 1.66666 15.442 1.66666 15V4.16666C1.66666 3.72463 1.84225 3.3007 2.15481 2.98814C2.46737 2.67558 2.8913 2.49999 3.33332 2.49999H6.58332C6.86206 2.49726 7.13703 2.56448 7.38307 2.69551C7.62911 2.82653 7.83836 3.01718 7.99166 3.24999L8.66666 4.24999C8.81841 4.48043 9.02501 4.66959 9.26791 4.80049C9.5108 4.93139 9.7824 4.99994 10.0583 4.99999H15C15.442 4.99999 15.8659 5.17558 16.1785 5.48814C16.4911 5.8007 16.6667 6.22463 16.6667 6.66666V8.33332Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>Indigo Pharma Lab Testing</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Annual Expenditure report</div>
+            <div class="ql-pop-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Team Workload Summary Report</div>
+          </div>
+          <div class="dropdown-footer"><a href="#">Customise</a></div>
+        </div>
+      </div>
+      <div class="avatar-wrap" id="profileToggle">
+        <div class="avatar">OP</div>
+        <svg class="tb-icon" style="width:12px;height:12px;" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <div class="dropdown profile-dropdown" id="profileDropdown">
+          <div class="profile-header">
+            <div class="avatar" style="width:32px;height:32px;font-size:12px;">OP</div>
+            <div class="profile-name">Olive Pluto</div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-row"><span class="profile-label">Emp ID:</span><span class="profile-value">EXT12345</span></div>
+            <div class="profile-row"><span class="profile-label">Current location:</span><span class="profile-value">South East Asia</span></div>
+          </div>
+          <div class="profile-footer">
+            <button class="profile-settings-btn">Settings &amp; preferences</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-wrap">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nav-list">
+        <a class="nav-item active" href="home.html">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M3 7.64706L10 2L17 7.64706V18H12.3333V11.4118H7.66667V18H3V7.64706Z" stroke="currentColor" stroke-width="1.67" stroke-linejoin="round"/></svg></span>
+          <span class="label">Home</span>
+        </a>
+        <a class="nav-item" href="my-forecast.html">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M13.3333 5.83333H18.3333V10.8333" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.3333 5.83333L11.25 12.9167L7.08332 8.74999L1.66666 14.1667" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">My forecast</span>
+        </a>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M4.99999 11.6667L6.24999 9.24999C6.38588 8.98011 6.59259 8.75224 6.848 8.59078C7.10341 8.42931 7.39791 8.34032 7.69999 8.33332H16.6667M16.6667 8.33332C16.9213 8.33288 17.1726 8.39077 17.4014 8.50256C17.6301 8.61435 17.8302 8.77706 17.9863 8.97821C18.1424 9.17936 18.2503 9.4136 18.3018 9.66295C18.3533 9.9123 18.347 10.1701 18.2833 10.4167L17 15.4167C16.9071 15.7763 16.6968 16.0946 16.4024 16.3211C16.108 16.5475 15.7464 16.6692 15.375 16.6667H3.33332C2.8913 16.6667 2.46737 16.4911 2.15481 16.1785C1.84225 15.8659 1.66666 15.442 1.66666 15V4.16666C1.66666 3.72463 1.84225 3.3007 2.15481 2.98814C2.46737 2.67558 2.8913 2.49999 3.33332 2.49999H6.58332C6.86206 2.49726 7.13703 2.56448 7.38307 2.69551C7.62911 2.82653 7.83836 3.01718 7.99166 3.24999L8.66666 4.24999C8.81841 4.48043 9.02501 4.66959 9.26791 4.80049C9.5108 4.93139 9.7824 4.99994 10.0583 4.99999H15C15.442 4.99999 15.8659 5.17558 16.1785 5.48814C16.4911 5.8007 16.6667 6.22463 16.6667 6.66666V8.33332Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">Projects</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><g><path d="M5 18.3333V3.33332C5 2.8913 5.17559 2.46737 5.48816 2.15481C5.80072 1.84225 6.22464 1.66666 6.66667 1.66666H13.3333C13.7754 1.66666 14.1993 1.84225 14.5118 2.15481C14.8244 2.46737 15 2.8913 15 3.33332V18.3333H5Z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.99999 10H3.33332C2.8913 10 2.46737 10.1756 2.15481 10.4882C1.84225 10.8007 1.66666 11.2246 1.66666 11.6667V16.6667C1.66666 17.1087 1.84225 17.5326 2.15481 17.8452C2.46737 18.1577 2.8913 18.3333 3.33332 18.3333H4.99999" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7.5H16.6667C17.1087 7.5 17.5326 7.6756 17.8452 7.98816C18.1577 8.30072 18.3333 8.72464 18.3333 9.16667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1577 17.1087 18.3333 16.6667 18.3333H15" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 5H11.6667" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 8.33334H11.6667" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 11.6667H11.6667" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 15H11.6667" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
+          <span class="label">Departments</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 14.1667V7.5" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.8333 14.1667V4.16666" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.66666 14.1667V11.6667" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">Reports</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M8.33332 12.5H4.99999C4.11593 12.5 3.26809 12.8512 2.64297 13.4763C2.01785 14.1014 1.66666 14.9493 1.66666 15.8333V17.5" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 15C16.3807 15 17.5 13.8807 17.5 12.5C17.5 11.1193 16.3807 10 15 10C13.6193 10 12.5 11.1193 12.5 12.5C12.5 13.8807 13.6193 15 15 15Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.49999 9.16667C9.34094 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34094 2.5 7.49999 2.5C5.65904 2.5 4.16666 3.99238 4.16666 5.83333C4.16666 7.67428 5.65904 9.16667 7.49999 9.16667Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">Admin</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10.1833 1.66666H9.81667C9.37464 1.66666 8.95072 1.84225 8.63816 2.15481C8.3256 2.46737 8.15 2.8913 8.15 3.33332V3.48332C8.1497 3.77559 8.07255 4.06265 7.92628 4.31569C7.78002 4.56873 7.56978 4.77885 7.31667 4.92499L6.95834 5.13332C6.70497 5.2796 6.41756 5.35661 6.125 5.35661C5.83244 5.35661 5.54503 5.2796 5.29167 5.13332L5.16667 5.06666C4.78422 4.84604 4.32987 4.78619 3.90334 4.90025C3.47681 5.0143 3.11296 5.29294 2.89167 5.67499L2.70833 5.99166C2.48772 6.3741 2.42787 6.82846 2.54192 7.25499C2.65598 7.68152 2.93461 8.04536 3.31667 8.26666L3.44167 8.34999C3.69356 8.49542 3.90302 8.70423 4.04921 8.95568C4.1954 9.20713 4.27325 9.49247 4.275 9.78332V10.2083C4.27617 10.502 4.19971 10.7908 4.05337 11.0454C3.90703 11.3 3.69601 11.5115 3.44167 11.6583L3.31667 11.7333C2.93461 11.9546 2.65598 12.3185 2.54192 12.745C2.42787 13.1715 2.48772 13.6259 2.70833 14.0083L2.89167 14.325C3.11296 14.707 3.47681 14.9857 3.90334 15.0997C4.32987 15.2138 4.78422 15.1539 5.16667 14.9333L5.29167 14.8667C5.54503 14.7204 5.83244 14.6434 6.125 14.6434C6.41756 14.6434 6.70497 14.7204 6.95834 14.8667L7.31667 15.075C7.56978 15.2211 7.78002 15.4313 7.92628 15.6843C8.07255 15.9373 8.1497 16.2244 8.15 16.5167V16.6667C8.15 17.1087 8.3256 17.5326 8.63816 17.8452C8.95072 18.1577 9.37464 18.3333 9.81667 18.3333H10.1833C10.6254 18.3333 11.0493 18.1577 11.3618 17.8452C11.6744 17.5326 11.85 17.1087 11.85 16.6667V16.5167C11.8503 16.2244 11.9275 15.9373 12.0737 15.6843C12.22 15.4313 12.4302 15.2211 12.6833 15.075L13.0417 14.8667C13.295 14.7204 13.5824 14.6434 13.875 14.6434C14.1676 14.6434 14.455 14.7204 14.7083 14.8667L14.8333 14.9333C15.2158 15.1539 15.6701 15.2138 16.0967 15.0997C16.5232 14.9857 16.887 14.707 17.1083 14.325L17.2917 14C17.5123 13.6175 17.5721 13.1632 17.4581 12.7367C17.344 12.3101 17.0654 11.9463 16.6833 11.725L16.5583 11.6583C16.304 11.5115 16.093 11.3 15.9466 11.0454C15.8003 10.7908 15.7238 10.502 15.725 10.2083V9.79166C15.7238 9.49797 15.8003 9.2092 15.9466 8.95457C16.093 8.69994 16.304 8.4885 16.5583 8.34166L16.6833 8.26666C17.0654 8.04536 17.344 7.68152 17.4581 7.25499C17.5721 6.82846 17.5123 6.3741 17.2917 5.99166L17.1083 5.67499C16.887 5.29294 16.5232 5.0143 16.0967 4.90025C15.6701 4.78619 15.2158 4.84604 14.8333 5.06666L14.7083 5.13332C14.455 5.2796 14.1676 5.35661 13.875 5.35661C13.5824 5.35661 13.295 5.2796 13.0417 5.13332L12.6833 4.92499C12.4302 4.77885 12.22 4.56873 12.0737 4.31569C11.9275 4.06265 11.8503 3.77559 11.85 3.48332V3.33332C11.85 2.8913 11.6744 2.46737 11.3618 2.15481C11.0493 1.84225 10.6254 1.66666 10.1833 1.66666Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">System</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg viewBox="0 0 20 20" fill="none"><g><path d="M9.99999 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 9.99999C18.3333 5.39762 14.6024 1.66666 9.99999 1.66666C5.39762 1.66666 1.66666 5.39762 1.66666 9.99999C1.66666 14.6024 5.39762 18.3333 9.99999 18.3333Z" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.57501 7.50002C7.77093 6.94307 8.15764 6.47344 8.66664 6.17429C9.17564 5.87515 9.77409 5.7658 10.356 5.86561C10.9379 5.96542 11.4657 6.26795 11.8459 6.71962C12.2261 7.17129 12.4342 7.74295 12.4333 8.33335C12.4333 10 9.93335 10.8334 9.93335 10.8334" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14.1667H10.0083" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
+          <span class="label">Help</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="collapse-btn" id="collapseToggle">
+          <svg class="icon-collapse" viewBox="0 0 18 18" fill="none"><path d="M9.5 5V13L13.5 9L9.5 5ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM7 16H16V2H7V16Z" fill="#01426A"/></svg>
+          <svg class="icon-expand" viewBox="0 0 18 18" fill="none"><path d="M8.5 13V5L4.5 9L8.5 13ZM16 0C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979166 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2C1.45 18 0.979166 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979166 0.5875 0.5875C0.979166 0.195833 1.45 0 2 0H16ZM11 2H2V16H11V2Z" fill="#01426A"/></svg>
+          <span class="label">Collapse</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+
+      <!-- Stat cards -->
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M16 20V4C16 3.46957 15.7893 2.96086 15.4142 2.58579C15.0391 2.21071 14.5304 2 14 2H10C9.46957 2 8.96086 2.21071 8.58579 2.58579C8.21071 2.96086 8 3.46957 8 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 6H4C2.89543 6 2 6.89543 2 8V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V8C22 6.89543 21.1046 6 20 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div><div class="stat-value">12</div><div class="stat-label">Total Ongoing Projects</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div><div class="stat-value">24</div><div class="stat-label">Pending Tasks</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 3V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 17V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div><div class="stat-value">3</div><div class="stat-label">Reports Available</div></div>
+        </div>
+      </div>
+
+      <!-- Tasks + right column -->
+      <div class="content-grid">
+        <div class="col-left">
+          <div class="card" style="padding-bottom:0;">
+            <div class="card-header-row">
+              <div>
+                <div class="card-title">My Tasks</div>
+                <div class="card-subtext">Here you see your tasks, you can flag tasks to access in the flagged tasks tab</div>
+              </div>
+              <div class="icon-btn">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 18C3.44772 18 3 17.5523 3 17C3 16.4477 3.44772 16 4 16H8C8.55228 16 9 16.4477 9 17C9 17.5523 8.55228 18 8 18H4ZM4 13C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11H14C14.5523 11 15 11.4477 15 12C15 12.5523 14.5523 13 14 13H4ZM4 8C3.44772 8 3 7.55228 3 7C3 6.44772 3.44772 6 4 6H20C20.5523 6 21 6.44772 21 7C21 7.55228 20.5523 8 20 8H4Z" fill="#006BA6"/></svg>
+              </div>
+            </div>
+
+            <div class="tabs">
+              <div class="tab active">All (24)</div>
+              <div class="tab">Flagged (3)</div>
+            </div>
+
+            <div class="task-list">
+              <div class="task-item">
+                <div class="task-top">
+                  <div class="task-title">Implement a system for issue tracking</div>
+                  <div class="task-actions">
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M2 7.5C2 7.5 2.5 7 4 7C5.5 7 6.5 8 8 8C9.5 8 10 7.5 10 7.5V1.5C10 1.5 9.5 2 8 2C6.5 2 5.5 1 4 1C2.5 1 2 1.5 2 1.5V7.5Z" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11V7.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flag</div>
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M7.5 1.5H10.5V4.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7L10.5 1.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6.5V9.5C9 9.76522 8.89464 10.0196 8.70711 10.2071C8.51957 10.3946 8.26522 10.5 8 10.5H2.5C2.23478 10.5 1.98043 10.3946 1.79289 10.2071C1.60536 10.0196 1.5 9.76522 1.5 9.5V4C1.5 3.73478 1.60536 3.48043 1.79289 3.29289C1.98043 3.10536 2.23478 3 2.5 3H5.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Open task</div>
+                  </div>
+                </div>
+                <div class="task-desc">By clicking on the row, you will be redirected to the Project Page</div>
+                <div class="task-created">Created 2024-08-09</div>
+              </div>
+
+              <div class="task-item amber">
+                <div class="task-top">
+                  <div class="task-title">Develop a reporting and analytics module</div>
+                  <div class="task-actions">
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M2 7.5C2 7.5 2.5 7 4 7C5.5 7 6.5 8 8 8C9.5 8 10 7.5 10 7.5V1.5C10 1.5 9.5 2 8 2C6.5 2 5.5 1 4 1C2.5 1 2 1.5 2 1.5V7.5Z" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11V7.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flag</div>
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M7.5 1.5H10.5V4.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7L10.5 1.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6.5V9.5C9 9.76522 8.89464 10.0196 8.70711 10.2071C8.51957 10.3946 8.26522 10.5 8 10.5H2.5C2.23478 10.5 1.98043 10.3946 1.79289 10.2071C1.60536 10.0196 1.5 9.76522 1.5 9.5V4C1.5 3.73478 1.60536 3.48043 1.79289 3.29289C1.98043 3.10536 2.23478 3 2.5 3H5.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Open task</div>
+                  </div>
+                </div>
+                <div class="task-desc">Task description goes here. Click 'Open Tasks' to complete your task.</div>
+                <div class="task-created">Created 2024-08-09</div>
+              </div>
+
+              <div class="task-item amber">
+                <div class="task-top">
+                  <div class="task-title">Develop a reporting and analytics module</div>
+                  <div class="task-actions">
+                    <div class="task-action flagged"><svg viewBox="0 0 12 12" fill="none"><path d="M2 7.5C2 7.5 2.5 7 4 7C5.5 7 6.5 8 8 8C9.5 8 10 7.5 10 7.5V1.5C10 1.5 9.5 2 8 2C6.5 2 5.5 1 4 1C2.5 1 2 1.5 2 1.5V7.5Z" fill="#006BA6" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11V7.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flagged</div>
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M7.5 1.5H10.5V4.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7L10.5 1.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6.5V9.5C9 9.76522 8.89464 10.0196 8.70711 10.2071C8.51957 10.3946 8.26522 10.5 8 10.5H2.5C2.23478 10.5 1.98043 10.3946 1.79289 10.2071C1.60536 10.0196 1.5 9.76522 1.5 9.5V4C1.5 3.73478 1.60536 3.48043 1.79289 3.29289C1.98043 3.10536 2.23478 3 2.5 3H5.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Open task</div>
+                  </div>
+                </div>
+                <div class="task-desc">Task description goes here. Click 'Open Tasks' to complete your task.</div>
+                <div class="task-created">Created 2024-08-09</div>
+              </div>
+
+              <div class="task-item red">
+                <div class="task-top">
+                  <div class="task-title">Develop a project planning</div>
+                  <div class="task-actions">
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M2 7.5C2 7.5 2.5 7 4 7C5.5 7 6.5 8 8 8C9.5 8 10 7.5 10 7.5V1.5C10 1.5 9.5 2 8 2C6.5 2 5.5 1 4 1C2.5 1 2 1.5 2 1.5V7.5Z" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11V7.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flag</div>
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M7.5 1.5H10.5V4.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7L10.5 1.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6.5V9.5C9 9.76522 8.89464 10.0196 8.70711 10.2071C8.51957 10.3946 8.26522 10.5 8 10.5H2.5C2.23478 10.5 1.98043 10.3946 1.79289 10.2071C1.60536 10.0196 1.5 9.76522 1.5 9.5V4C1.5 3.73478 1.60536 3.48043 1.79289 3.29289C1.98043 3.10536 2.23478 3 2.5 3H5.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Open task</div>
+                  </div>
+                </div>
+                <div class="task-desc">Task description goes here. Click 'Open Tasks' to complete your task.</div>
+                <div class="task-created">Created 2024-08-09</div>
+              </div>
+
+              <div class="task-item red">
+                <div class="task-top">
+                  <div class="task-title">Develop a project planning</div>
+                  <div class="task-actions">
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M2 7.5C2 7.5 2.5 7 4 7C5.5 7 6.5 8 8 8C9.5 8 10 7.5 10 7.5V1.5C10 1.5 9.5 2 8 2C6.5 2 5.5 1 4 1C2.5 1 2 1.5 2 1.5V7.5Z" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11V7.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flag</div>
+                    <div class="task-action"><svg viewBox="0 0 12 12" fill="none"><path d="M7.5 1.5H10.5V4.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7L10.5 1.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6.5V9.5C9 9.76522 8.89464 10.0196 8.70711 10.2071C8.51957 10.3946 8.26522 10.5 8 10.5H2.5C2.23478 10.5 1.98043 10.3946 1.79289 10.2071C1.60536 10.0196 1.5 9.76522 1.5 9.5V4C1.5 3.73478 1.60536 3.48043 1.79289 3.29289C1.98043 3.10536 2.23478 3 2.5 3H5.5" stroke="#006BA6" stroke-linecap="round" stroke-linejoin="round"/></svg>Open task</div>
+                  </div>
+                </div>
+                <div class="task-desc">Task description goes here. Click 'Open Tasks' to complete your task.</div>
+                <div class="task-created">Created 2024-08-09</div>
+              </div>
+              <div class="task-fade"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-right">
+          <div class="card">
+            <div class="cal-date">Tuesday, November 18, 2025</div>
+            <div class="cal-week">
+              <div class="cal-day"><span>SUN</span><span class="num">16</span></div>
+              <div class="cal-day"><span>MON</span><span class="num">17</span></div>
+              <div class="cal-day today"><span>TUE</span><span class="num">18</span></div>
+              <div class="cal-day"><span>WED</span><span class="num">19</span></div>
+              <div class="cal-day"><span>THU</span><span class="num">20</span></div>
+              <div class="cal-day"><span>FRI</span><span class="num">21</span></div>
+              <div class="cal-day"><span>SAT</span><span class="num">22</span></div>
+            </div>
+            <div class="cal-empty">
+              <svg style="width:15px;height:15px;color:var(--text-gray-light);flex-shrink:0;" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6.5V10L12.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              You have no project milestones for today
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-row ql-header-row">
+              <div class="card-title ql-title">Quick Links</div>
+              <div class="icon-btn ql-edit-btn">
+                <svg viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_5_53)"><path d="M9.16663 3.33332H3.33329C2.89127 3.33332 2.46734 3.50891 2.15478 3.82147C1.84222 4.13403 1.66663 4.55796 1.66663 4.99999V16.6667C1.66663 17.1087 1.84222 17.5326 2.15478 17.8452C2.46734 18.1577 2.89127 18.3333 3.33329 18.3333H15C15.442 18.3333 15.8659 18.1577 16.1785 17.8452C16.491 17.5326 16.6666 17.1087 16.6666 16.6667V10.8333M15.4166 2.08332C15.7481 1.7518 16.1978 1.56555 16.6666 1.56555C17.1355 1.56555 17.5851 1.7518 17.9166 2.08332C18.2481 2.41484 18.4344 2.86448 18.4344 3.33332C18.4344 3.80216 18.2481 4.2518 17.9166 4.58332L9.99996 12.5L6.66663 13.3333L7.49996 9.99999L15.4166 2.08332Z" stroke="#006BA6" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_5_53"><rect width="20" height="20" fill="white"/></clipPath></defs></svg>
+              </div>
+            </div>
+            <div class="ql-list">
+              <div class="ql-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4.99999 11.6667L6.24999 9.24999C6.38588 8.98011 6.59259 8.75224 6.848 8.59078C7.10341 8.42931 7.39791 8.34032 7.69999 8.33332H16.6667M16.6667 8.33332C16.9213 8.33288 17.1726 8.39077 17.4014 8.50256C17.6301 8.61435 17.8302 8.77706 17.9863 8.97821C18.1424 9.17936 18.2503 9.4136 18.3018 9.66295C18.3533 9.9123 18.347 10.1701 18.2833 10.4167L17 15.4167C16.9071 15.7763 16.6968 16.0946 16.4024 16.3211C16.108 16.5475 15.7464 16.6692 15.375 16.6667H3.33332C2.8913 16.6667 2.46737 16.4911 2.15481 16.1785C1.84225 15.8659 1.66666 15.442 1.66666 15V4.16666C1.66666 3.72463 1.84225 3.3007 2.15481 2.98814C2.46737 2.67558 2.8913 2.49999 3.33332 2.49999H6.58332C6.86206 2.49726 7.13703 2.56448 7.38307 2.69551C7.62911 2.82653 7.83836 3.01718 7.99166 3.24999L8.66666 4.24999C8.81841 4.48043 9.02501 4.66959 9.26791 4.80049C9.5108 4.93139 9.7824 4.99994 10.0583 4.99999H15C15.442 4.99999 15.8659 5.17558 16.1785 5.48814C16.4911 5.8007 16.6667 6.22463 16.6667 6.66666V8.33332Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>Project Aurora Initiative</div>
+              <div class="ql-item"><svg viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_ql1)"><path d="M5 18.3333V3.33332C5 2.8913 5.17559 2.46737 5.48816 2.15481C5.80072 1.84225 6.22464 1.66666 6.66667 1.66666H13.3333C13.7754 1.66666 14.1993 1.84225 14.5118 2.15481C14.8244 2.46737 15 2.8913 15 3.33332V18.3333H5Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.99999 10H3.33332C2.8913 10 2.46737 10.1756 2.15481 10.4882C1.84225 10.8007 1.66666 11.2246 1.66666 11.6667V16.6667C1.66666 17.1087 1.84225 17.5326 2.15481 17.8452C2.46737 18.1577 2.8913 18.3333 3.33332 18.3333H4.99999" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7.5H16.6667C17.1087 7.5 17.5326 7.6756 17.8452 7.98816C18.1577 8.30072 18.3333 8.72464 18.3333 9.16667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1577 17.1087 18.3333 16.6667 18.3333H15" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 5H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 8.33334H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 11.6667H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 15H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_ql1"><rect width="20" height="20" fill="white"/></clipPath></defs></svg>Architecture &amp; Design Department</div>
+              <div class="ql-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Budget Utilization Report</div>
+              <div class="ql-item"><svg viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_ql2)"><path d="M5 18.3333V3.33332C5 2.8913 5.17559 2.46737 5.48816 2.15481C5.80072 1.84225 6.22464 1.66666 6.66667 1.66666H13.3333C13.7754 1.66666 14.1993 1.84225 14.5118 2.15481C14.8244 2.46737 15 2.8913 15 3.33332V18.3333H5Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.99999 10H3.33332C2.8913 10 2.46737 10.1756 2.15481 10.4882C1.84225 10.8007 1.66666 11.2246 1.66666 11.6667V16.6667C1.66666 17.1087 1.84225 17.5326 2.15481 17.8452C2.46737 18.1577 2.8913 18.3333 3.33332 18.3333H4.99999" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7.5H16.6667C17.1087 7.5 17.5326 7.6756 17.8452 7.98816C18.1577 8.30072 18.3333 8.72464 18.3333 9.16667V16.6667C18.3333 17.1087 18.1577 17.5326 17.8452 17.8452C17.5326 18.1577 17.1087 18.3333 16.6667 18.3333H15" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 5H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 8.33334H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 11.6667H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.33334 15H11.6667" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_ql2"><rect width="20" height="20" fill="white"/></clipPath></defs></svg>Civil Engineering</div>
+              <div class="ql-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Overall consolidated report</div>
+              <div class="ql-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4.99999 11.6667L6.24999 9.24999C6.38588 8.98011 6.59259 8.75224 6.848 8.59078C7.10341 8.42931 7.39791 8.34032 7.69999 8.33332H16.6667M16.6667 8.33332C16.9213 8.33288 17.1726 8.39077 17.4014 8.50256C17.6301 8.61435 17.8302 8.77706 17.9863 8.97821C18.1424 9.17936 18.2503 9.4136 18.3018 9.66295C18.3533 9.9123 18.347 10.1701 18.2833 10.4167L17 15.4167C16.9071 15.7763 16.6968 16.0946 16.4024 16.3211C16.108 16.5475 15.7464 16.6692 15.375 16.6667H3.33332C2.8913 16.6667 2.46737 16.4911 2.15481 16.1785C1.84225 15.8659 1.66666 15.442 1.66666 15V4.16666C1.66666 3.72463 1.84225 3.3007 2.15481 2.98814C2.46737 2.67558 2.8913 2.49999 3.33332 2.49999H6.58332C6.86206 2.49726 7.13703 2.56448 7.38307 2.69551C7.62911 2.82653 7.83836 3.01718 7.99166 3.24999L8.66666 4.24999C8.81841 4.48043 9.02501 4.66959 9.26791 4.80049C9.5108 4.93139 9.7824 4.99994 10.0583 4.99999H15C15.442 4.99999 15.8659 5.17558 16.1785 5.48814C16.4911 5.8007 16.6667 6.22463 16.6667 6.66666V8.33332Z" stroke="#4A5565" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>Indigo Pharma Lab Testing</div>
+              <div class="ql-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Annual Expenditure report</div>
+              <div class="ql-item"><svg viewBox="0 0 24 24" fill="none"><path d="M15 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7L15 2Z" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V6C14 6.53043 14.2107 7.03914 14.5858 7.41421C14.9609 7.78929 15.4696 8 16 8H20" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#006BA6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>Team Workload Summary Report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project list -->
+      <div class="card">
+        <div class="card-title">Project List</div>
+        <div class="card-subtext">By clicking on the row, you will be redirected to the Project Page</div>
+
+        <div class="tabs">
+          <div class="tab">All (10)</div>
+          <div class="tab active">Active (3)</div>
+          <div class="tab">Completed (16)</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><div class="th-inner">Status <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Project No. <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Project Name <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Project Type <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Assigned <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Not Submitted <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Awaiting As... <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+                <th><div class="th-inner">Total <svg viewBox="0 0 16 16" fill="none"><path d="M13.3333 7.99996L12.3933 7.05996L8.66666 10.78V2.66663H7.33332V10.78L3.61332 7.05329L2.66666 7.99996L7.99999 13.3333L13.3333 7.99996Z" fill="#4A5565"/></svg></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="status-pill">Active</span></td><td>123456</td><td>Aurora Initiative</td><td>Internal</td><td>20</td><td>12</td><td>12</td><td>12</td></tr>
+              <tr><td><span class="status-pill">Active</span></td><td>123456</td><td>Aurora Initiative</td><td>Internal</td><td>34</td><td>12</td><td>12</td><td>12</td></tr>
+              <tr><td><span class="status-pill">Active</span></td><td>123456</td><td>Aurora Initiative</td><td>Internal</td><td>20</td><td>12</td><td>12</td><td>12</td></tr>
+              <tr><td><span class="status-pill">Active</span></td><td>123456</td><td>Aurora Initiative</td><td>Internal</td><td>20</td><td>12</td><td>12</td><td>12</td></tr>
+              <tr><td><span class="status-pill">Active</span></td><td>123456</td><td>Aurora Initiative</td><td>Internal</td><td>34</td><td>12</td><td>12</td><td>12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('collapseToggle').addEventListener('click', function(){
+    document.querySelector('.sidebar').classList.toggle('collapsed');
+  });
+
+  var calToggle = document.getElementById('calTypeToggle');
+  var calDropdown = document.getElementById('calDropdown');
+  var calLabel = document.getElementById('calTypeLabel');
+
+  var notifToggle = document.getElementById('notifToggle');
+  var notifDropdown = document.getElementById('notifDropdown');
+
+  var bookmarkToggle = document.getElementById('bookmarkToggle');
+  var bookmarkDropdown = document.getElementById('bookmarkDropdown');
+
+  var profileToggle = document.getElementById('profileToggle');
+  var profileDropdown = document.getElementById('profileDropdown');
+
+  var allHeaderDropdowns = [calDropdown, notifDropdown, bookmarkDropdown, profileDropdown];
+
+  function closeOtherDropdowns(except){
+    allHeaderDropdowns.forEach(function(d){
+      if (d !== except) d.classList.remove('open');
+    });
+  }
+
+  function wireToggle(toggleEl, dropdownEl){
+    toggleEl.addEventListener('click', function(e){
+      var willOpen = !dropdownEl.classList.contains('open');
+      closeOtherDropdowns(dropdownEl);
+      dropdownEl.classList.toggle('open', willOpen);
+    });
+  }
+
+  wireToggle(calToggle, calDropdown);
+  wireToggle(notifToggle, notifDropdown);
+  wireToggle(bookmarkToggle, bookmarkDropdown);
+  wireToggle(profileToggle, profileDropdown);
+
+  calDropdown.querySelectorAll('.cal-option').forEach(function(option){
+    option.addEventListener('click', function(e){
+      e.stopPropagation();
+      calDropdown.querySelectorAll('.cal-option').forEach(function(o){ o.classList.remove('selected'); });
+      option.classList.add('selected');
+      calLabel.textContent = option.getAttribute('data-value');
+      calDropdown.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click', function(e){
+    var toggles = [calToggle, notifToggle, bookmarkToggle, profileToggle];
+    var clickedInsideAny = toggles.some(function(t){ return t.contains(e.target); });
+    if (!clickedInsideAny) {
+      allHeaderDropdowns.forEach(function(d){ d.classList.remove('open'); });
+    }
+  });
+</script>
+</body>
+</html>
